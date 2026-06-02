@@ -6,13 +6,22 @@
 </head>
 <body>
     <div class="container">
+        <nav>
+    <a href="/">Create Task</a> |
+    <a href="/tasks">View Tasks</a>
+</nav>
+<hr>
     <h1>PipelinePilot AI</h1>
     <h2>Task Result</h2>
 
     <p><b>Task Type:</b> {{ task.task_type }}</p>
     <p><b>Source:</b> {{ task.source }}</p>
     <p><b>Status:</b> {{ task.status }}</p>
-    <p><b>Readiness Score:</b> {{ task.score }}/100</p>
+    <div class="card">
+    <h3>Release Readiness Score</h3>
+    <p class="score">{{ task.score }}/100</p>
+    <p><b>Status:</b> {{ task.status }}</p>
+</div>
     <p><b>Summary:</b> {{ task.summary }}</p>
 
 <h3>Agent Execution</h3>
@@ -43,7 +52,6 @@
 <p>PipelinePilot AI recommends creating a GitLab issue with this release/support checklist.</p>
 <button>Approve GitLab Action</button>
 
-    <button>Approve GitLab Action</button>
 
     <p><a href="/">Create Another Task</a></p>
     <p><a href="/tasks">View Tasks</a></p>
