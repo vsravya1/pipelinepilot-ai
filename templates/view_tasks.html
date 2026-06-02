@@ -2,8 +2,10 @@
 <html>
 <head>
     <title>View Tasks</title>
+     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="container">
     <h1>PipelinePilot AI</h1>
     <h2>View Tasks</h2>
 
@@ -31,5 +33,6 @@
     {% endif %}
 
     <p><a href="/">Create Task</a></p>
+    </div>
 </body>
 </html>
