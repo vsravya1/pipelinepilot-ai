@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Tasks</title>
+</head>
+<body>
+    <h1>PipelinePilot AI</h1>
+    <h2>View Tasks</h2>
+
+    {% if tasks %}
+        <table border="1" cellpadding="8">
+            <tr>
+                <th>ID</th>
+                <th>Task Type</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Score</th>
+            </tr>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.task_type }}</td>
+                <td>{{ task.source }}</td>
+                <td>{{ task.status }}</td>
+                <td>{{ task.score }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No tasks created yet.</p>
+    {% endif %}
+
+    <p><a href="/">Create Task</a></p>
+</body>
+</html>
