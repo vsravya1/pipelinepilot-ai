@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PipelinePilot AI</title>
+</head>
+<body>
+    <h1>PipelinePilot AI</h1>
+    <h2>Create Task</h2>
+
+    <form method="POST" action="/run-task">
+        <label>Task Type</label><br>
+        <select name="task_type">
+            <option>New Job Creation</option>
+            <option>Production Support Issue</option>
+            <option>Data Quality Check</option>
+        </select><br><br>
+
+        <label>Source / Pipeline</label><br>
+        <input name="source" value="MongoDB orders"><br><br>
+
+        <label>Goal</label><br>
+        <textarea name="goal" rows="5" cols="60">Prepare orders pipeline for analytics release.</textarea><br><br>
+
+        <button type="submit">Generate Plan & Run Mock Workflow</button>
+    </form>
+
+    <p><a href="/tasks">View Tasks</a></p>
+</body>
+</html>
