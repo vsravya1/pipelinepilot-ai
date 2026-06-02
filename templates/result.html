@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Result</title>
+</head>
+<body>
+    <h1>PipelinePilot AI</h1>
+    <h2>Task Result</h2>
+
+    <p><b>Task Type:</b> {{ task.task_type }}</p>
+    <p><b>Source:</b> {{ task.source }}</p>
+    <p><b>Status:</b> {{ task.status }}</p>
+    <p><b>Readiness Score:</b> {{ task.score }}/100</p>
+    <p><b>Summary:</b> {{ task.summary }}</p>
+
+    <h3>Mock Agent Steps</h3>
+    <ol>
+        <li>Supervisor Agent created plan</li>
+        <li>Fivetran pipeline status checked</li>
+        <li>Specialist agent analyzed task</li>
+        <li>Data Quality Agent generated validation result</li>
+        <li>GitLab action prepared for approval</li>
+    </ol>
+
+    <button>Approve GitLab Action</button>
+
+    <p><a href="/">Create Another Task</a></p>
+    <p><a href="/tasks">View Tasks</a></p>
+</body>
+</html>
