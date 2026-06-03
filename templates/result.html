@@ -1,60 +1,130 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Task Result</title>
-     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>PipelinePilot AI - Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <nav>
-    <a href="/">Create Task</a> |
-    <a href="/tasks">View Tasks</a>
-</nav>
-<hr>
+
+<div class="container">
+    <nav>
+        <a href="/">Create Task</a> |
+        <a href="/tasks">View Tasks</a>
+    </nav>
+
+    <hr>
+
     <h1>PipelinePilot AI</h1>
     <h2>Task Result</h2>
 
-    <p><b>Task Type:</b> {{ task.task_type }}</p>
-    <p><b>Source:</b> {{ task.source }}</p>
-    <p><b>Status:</b> {{ task.status }}</p>
-    <div class="card">
-    <h3>Release Readiness Score</h3>
-    <p class="score">{{ task.score }}/100</p>
-    <p><b>Status:</b> {{ task.status }}</p>
+    <p><strong>Task ID:</strong> {{ task.task_id }}</p>
+    <p><strong>Task Type:</strong> {{ task.task_type }}</p>
+    <p><strong>Source:</strong> {{ task.source }}</p>
+    <p><strong>Dataset:</strong> {{ task.dataset }}</p>
+    <p><strong>Target:</strong> {{ task.target }}</p>
+    <p><strong>Status:</strong> {{ task.status }}</p>
+
+    <div class="score-card">
+        <h2>Release Readiness Score</h2>
+        <h1>{{ task.readiness_score }}/100</h1>
+        <p><strong>Status:</strong> {{ task.status }}</p>
+    </div>
+
+    <section class="card">
+        <h2>Agent Plan</h2>
+        <ol>
+            {% for step in task.plan %}
+                <li>{{ step }}</li>
+            {% endfor %}
+        </ol>
+    </section>
+
+    <section class="card">
+        <h2>Agent Execution</h2>
+        {% for msg in task.messages %}
+            <div class="message">
+                <strong>{{ msg.actor }}</strong>
+                <p>{{ msg.message }}</p>
+            </div>
+        {% endfor %}
+    </section>
+
+    <section class="card">
+        <h2>Fivetran Pipeline Status</h2>
+        <p><strong>Connector:</strong> {{ task.fivetran_status.connector }}</p>
+        <p><strong>Status:</strong> {{ task.fivetran_status.status }}</p>
+        <p><strong>Last Sync:</strong> {{ task.fivetran_status.last_sync }}</p>
+        <p><strong>Schema Drift:</strong> {{ task.fivetran_status.schema_drift }}</p>
+
+        {% if task.fivetran_status.new_fields %}
+            <p><strong>New Fields:</strong></p>
+            <ul>
+                {% for field in task.fivetran_status.new_fields %}
+                    <li>{{ field }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>Data Quality Issues</h2>
+        {% if task.quality_result.issues %}
+            <ul>
+                {% for issue in task.quality_result.issues %}
+                    <li>{{ issue }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No data quality issues found.</p>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>Recommended Safe Fixes</h2>
+        <ul>
+            {% for fix in task.quality_result.safe_fixes %}
+                <li>{{ fix }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    {% if task.transformation %}
+    <section class="card">
+        <h2>Generated Transformation SQL</h2>
+        <pre>{{ task.transformation.sql }}</pre>
+
+        <h3>Validation Rules</h3>
+        <ul>
+            {% for rule in task.transformation.validation_rules %}
+                <li>{{ rule }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if task.support_result %}
+    <section class="card">
+        <h2>Production Support Finding</h2>
+        <p><strong>Root Cause:</strong> {{ task.support_result.root_cause }}</p>
+        <p><strong>Impact:</strong> {{ task.support_result.impact }}</p>
+        <p><strong>Recommended Fix:</strong> {{ task.support_result.recommended_fix }}</p>
+    </section>
+    {% endif %}
+
+    <section class="card">
+        <h2>GitLab Approval</h2>
+        <p>PipelinePilot AI recommends creating a GitLab issue with this release/support checklist.</p>
+
+        <p><strong>Issue Title:</strong> {{ task.gitlab_action.title }}</p>
+        <pre>{{ task.gitlab_action.description }}</pre>
+
+        <button>Approve GitLab Action - Demo</button>
+    </section>
+
+    <br>
+    <a href="/">Create Another Task</a> |
+    <a href="/tasks">View Tasks</a>
 </div>
-    <p><b>Summary:</b> {{ task.summary }}</p>
 
-<h3>Agent Execution</h3>
-<ol>
-    {% for step in task.agent_steps %}
-        <li>{{ step }}</li>
-    {% endfor %}
-</ol>
-
-<h3>Fivetran Pipeline Status</h3>
-<p>{{ task.fivetran_status }}</p>
-
-<h3>Issues Found</h3>
-<ul>
-    {% for issue in task.issues %}
-        <li>{{ issue }}</li>
-    {% endfor %}
-</ul>
-
-<h3>Recommended Safe Fixes</h3>
-<ul>
-    {% for item in task.recommendations %}
-        <li>{{ item }}</li>
-    {% endfor %}
-</ul>
-
-<h3>GitLab Approval</h3>
-<p>PipelinePilot AI recommends creating a GitLab issue with this release/support checklist.</p>
-<button>Approve GitLab Action</button>
-
-
-    <p><a href="/">Create Another Task</a></p>
-    <p><a href="/tasks">View Tasks</a></p>
-        </div>
 </body>
 </html>

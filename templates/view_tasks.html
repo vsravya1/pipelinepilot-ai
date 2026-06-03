@@ -1,43 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>View Tasks</title>
-     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>PipelinePilot AI - View Tasks</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <nav>
-    <a href="/">Create Task</a> |
-    <a href="/tasks">View Tasks</a>
-</nav>
-<hr>
+
+<div class="container">
+    <nav>
+        <a href="/">Create Task</a> |
+        <a href="/tasks">View Tasks</a>
+    </nav>
+
+    <hr>
+
     <h1>PipelinePilot AI</h1>
     <h2>View Tasks</h2>
 
     {% if tasks %}
-        <table border="1" cellpadding="8">
-            <tr>
-                <th>ID</th>
-                <th>Task Type</th>
-                <th>Source</th>
-                <th>Status</th>
-                <th>Score</th>
-            </tr>
-            {% for task in tasks %}
-            <tr>
-                <td>{{ task.id }}</td>
-                <td>{{ task.task_type }}</td>
-                <td>{{ task.source }}</td>
-                <td>{{ task.status }}</td>
-                <td>{{ task.score }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+    <table>
+        <tr>
+            <th>Task ID</th>
+            <th>Task Type</th>
+            <th>Source</th>
+            <th>Dataset</th>
+            <th>Status</th>
+            <th>Score</th>
+            <th>Created At</th>
+        </tr>
+
+        {% for task in tasks %}
+        <tr>
+            <td>
+                <a href="/tasks/{{ task.task_id }}">{{ task.task_id }}</a>
+            </td>
+            <td>{{ task.task_type }}</td>
+            <td>{{ task.source }}</td>
+            <td>{{ task.dataset }}</td>
+            <td>{{ task.status }}</td>
+            <td>{{ task.readiness_score }}/100</td>
+            <td>{{ task.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </table>
     {% else %}
         <p>No tasks created yet.</p>
     {% endif %}
 
-    <p><a href="/">Create Task</a></p>
-    </div>
+    {% if selected_task %}
+    <section class="card">
+        <h2>Selected Task Details</h2>
+
+        <p><strong>Task ID:</strong> {{ selected_task.task_id }}</p>
+        <p><strong>Task Type:</strong> {{ selected_task.task_type }}</p>
+        <p><strong>Goal:</strong> {{ selected_task.goal }}</p>
+        <p><strong>Status:</strong> {{ selected_task.status }}</p>
+        <p><strong>Readiness Score:</strong> {{ selected_task.readiness_score }}/100</p>
+
+        <h3>Agent Conversation History</h3>
+
+        {% if selected_task.saved_messages %}
+            {% for msg in selected_task.saved_messages %}
+            <div class="message">
+                <strong>{{ msg.actor }}</strong>
+                <p>{{ msg.message }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            {% for msg in selected_task.messages %}
+            <div class="message">
+                <strong>{{ msg.actor }}</strong>
+                <p>{{ msg.message }}</p>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <h3>GitLab Prepared Action</h3>
+        <p><strong>Issue Title:</strong> {{ selected_task.gitlab_action.title }}</p>
+        <pre>{{ selected_task.gitlab_action.description }}</pre>
+    </section>
+    {% endif %}
+
+    <br>
+    <a href="/">Create Task</a>
+</div>
+
 </body>
 </html>

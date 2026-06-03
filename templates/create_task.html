@@ -5,34 +5,54 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    
-    <div class="container">
-        <nav>
-    <a href="/">Create Task</a> |
-    <a href="/tasks">View Tasks</a>
-</nav>
-<hr>
+
+<div class="container">
+    <nav>
+        <a href="/">Create Task</a> |
+        <a href="/tasks">View Tasks</a>
+    </nav>
+
+    <hr>
+
     <h1>PipelinePilot AI</h1>
     <h2>Create Task</h2>
 
     <form method="POST" action="/run-task">
+
         <label>Task Type</label><br>
         <select name="task_type">
             <option>New Job Creation</option>
             <option>Production Support Issue</option>
             <option>Data Quality Check</option>
-        </select><br><br>
+        </select>
 
-        <label>Source / Pipeline</label><br>
-        <input name="source" value="MongoDB orders"><br><br>
+        <br><br>
+
+        <label>Source</label><br>
+        <input type="text" name="source" value="MongoDB">
+
+        <br><br>
+
+        <label>Dataset / Collection</label><br>
+        <input type="text" name="dataset" value="orders">
+
+        <br><br>
+
+        <label>Target</label><br>
+        <input type="text" name="target" value="analytics.fact_orders">
+
+        <br><br>
 
         <label>Goal</label><br>
-        <textarea name="goal" rows="5" cols="60">Prepare orders pipeline for analytics release.</textarea><br><br>
+<textarea name="goal">Prepare MongoDB orders data for analytics release, generate transformation logic, run data quality checks, and prepare a GitLab release checklist.</textarea>
+        <br><br>
 
-        <button type="submit">Generate Plan & Run Mock Workflow</button>
+        <button type="submit">Generate Plan & Run Agent Workflow</button>
     </form>
 
-    <p><a href="/tasks">View Tasks</a></p>
-        </div>
+    <br>
+    <a href="/tasks">View Tasks</a>
+</div>
+
 </body>
 </html>
