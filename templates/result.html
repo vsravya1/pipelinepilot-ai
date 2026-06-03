@@ -118,7 +118,9 @@
         <p><strong>Issue Title:</strong> {{ task.gitlab_action.title }}</p>
         <pre>{{ task.gitlab_action.description }}</pre>
 
-        <button>Approve GitLab Action - Demo</button>
+        <form method="POST" action="/approve-gitlab/{{ task.task_id }}">
+    <button type="submit">Approve GitLab Action</button>
+</form>
     </section>
 
     <br>

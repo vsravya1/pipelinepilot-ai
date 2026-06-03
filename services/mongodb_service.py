@@ -60,3 +60,28 @@ def get_messages(task_id):
 def test_connection():
     db.command("ping")
     return True
+
+
+def approve_gitlab_action(task_id, gitlab_result):
+    result = db.tasks.update_one(
+        {"task_id": task_id},
+        {
+            "$set": {
+                "gitlab_action.status": "Approved - GitLab issue created",
+                "gitlab_action.gitlab_url": gitlab_result.get("web_url"),
+                "gitlab_action.issue_id": gitlab_result.get("issue_id"),
+                "approval_status": "Approved"
+            }
+        }
+    )
+
+    db.approvals.insert_one({
+        "task_id": task_id,
+        "approval_status": "Approved",
+        "action": "GitLab issue created",
+        "gitlab_url": gitlab_result.get("web_url"),
+        "issue_id": gitlab_result.get("issue_id"),
+        "created_at": datetime.utcnow().isoformat()
+    })
+
+    return result.modified_count > 0   

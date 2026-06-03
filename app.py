@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from agents.supervisor_agent import run_workflow
-from services.mongodb_service import get_tasks, get_task, get_messages
+from services.mongodb_service import get_tasks, get_task, get_messages, approve_gitlab_action
+from services.gitlab_service import create_gitlab_issue
 
 app = Flask(__name__)
 
@@ -49,6 +50,24 @@ def task_detail(task_id):
         tasks=tasks,
         selected_task=selected_task
     )
+
+@app.route("/approve-gitlab/<task_id>", methods=["POST"])
+def approve_gitlab(task_id):
+    task = get_task(task_id)
+
+    if not task:
+        return "Task not found", 404
+
+    gitlab_action = task.get("gitlab_action", {})
+
+    gitlab_result = create_gitlab_issue(
+        title=gitlab_action.get("title"),
+        description=gitlab_action.get("description")
+    )
+
+    approve_gitlab_action(task_id, gitlab_result)
+
+    return redirect(url_for("task_detail", task_id=task_id))
 
 
 if __name__ == "__main__":
