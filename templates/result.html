@@ -28,6 +28,7 @@
         <h2>Release Readiness Score</h2>
         <h1>{{ task.readiness_score }}/100</h1>
         <p><strong>Status:</strong> {{ task.status }}</p>
+       
     </div>
 
     <section class="card">
@@ -49,10 +50,19 @@
         {% endfor %}
     </section>
 
+   <section class="card">
+    <h2>Gemini Agent Summary</h2>
+    <p><strong>Summary Mode:</strong> {{ task.agent_summary.source }}</p>
+    <div class="summary-box">
+        {{ task.agent_summary.summary | replace('\n', '<br>') | safe }}
+    </div>
+</section>
+
     <section class="card">
         <h2>Fivetran Pipeline Status</h2>
         <p><strong>Connector:</strong> {{ task.fivetran_status.connector }}</p>
         <p><strong>Status:</strong> {{ task.fivetran_status.status }}</p>
+         <p><strong>Status Source:</strong> {{ task.fivetran_status.source }}</p>
         <p><strong>Last Sync:</strong> {{ task.fivetran_status.last_sync }}</p>
         <p><strong>Schema Drift:</strong> {{ task.fivetran_status.schema_drift }}</p>
 

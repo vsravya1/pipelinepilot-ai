@@ -4,10 +4,12 @@ from datetime import datetime
 from services.fivetran_service import get_pipeline_status
 from services.gitlab_service import prepare_gitlab_action
 from services.mongodb_service import save_task, save_messages
+from services.gemini_service import generate_agent_summary
 
 from agents.data_engineer_agent import generate_transformation
 from agents.data_quality_agent import run_quality_checks
 from agents.prod_support_agent import investigate_issue
+
 
 
 def create_plan(task_type, source, dataset, target, goal):
@@ -80,13 +82,26 @@ def run_workflow(task_type, source, dataset, target, goal):
             "Data Quality Agent",
             "Recommended safe correction actions: " + "; ".join(quality_result["safe_fixes"])
         )
+    agent_summary = generate_agent_summary(
+    task_type=task_type,
+    dataset=dataset,
+    fivetran_status=fivetran_status,
+    quality_result=quality_result,
+    support_result=support_result,
+    transformation=transformation
+    )
+
+    add_message("Gemini Summary Agent", agent_summary["summary"])
 
     gitlab_action = prepare_gitlab_action(
-        task_type=task_type,
-        dataset=dataset,
-        quality_result=quality_result,
-        support_result=support_result,
-        transformation=transformation
+    task_type=task_type,
+    dataset=dataset,
+    quality_result=quality_result,
+    fivetran_status=fivetran_status,
+    support_result=support_result,
+    transformation=transformation,
+    messages=messages,
+    agent_summary=agent_summary
     )
 
     add_message("Supervisor Agent", "Prepared GitLab action and waiting for human approval.")
@@ -107,7 +122,8 @@ def run_workflow(task_type, source, dataset, target, goal):
         "gitlab_action": gitlab_action,
         "status": quality_result["status"],
         "readiness_score": quality_result["score"],
-        "messages": messages
+        "messages": messages,
+        "agent_summary": agent_summary
     }
 
     save_task(task)

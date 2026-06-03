@@ -62,6 +62,14 @@ def test_connection():
     return True
 
 
+def add_message(task_id, actor, message):
+    db.messages.insert_one({
+        "task_id": task_id,
+        "actor": actor,
+        "message": message,
+        "created_at": datetime.utcnow().isoformat()
+    })
+
 def approve_gitlab_action(task_id, gitlab_result):
     result = db.tasks.update_one(
         {"task_id": task_id},
@@ -84,4 +92,11 @@ def approve_gitlab_action(task_id, gitlab_result):
         "created_at": datetime.utcnow().isoformat()
     })
 
-    return result.modified_count > 0   
+    add_message(task_id, "Human", "Approved GitLab action.")
+    add_message(
+        task_id,
+        "GitLab",
+        f"Created issue #{gitlab_result.get('issue_id')}: {gitlab_result.get('web_url')}"
+    )
+
+    return result.modified_count > 0
