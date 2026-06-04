@@ -22,14 +22,26 @@
     <p><strong>Source:</strong> {{ task.source }}</p>
     <p><strong>Dataset:</strong> {{ task.dataset }}</p>
     <p><strong>Target:</strong> {{ task.target }}</p>
-    <p><strong>Status:</strong> {{ task.status }}</p>
+    <p>
+    <strong>Status:</strong>
+    {% if task.status == "Blocked" %}
+        <span class="badge badge-blocked">{{ task.status }}</span>
+    {% elif task.status == "Needs Review" %}
+        <span class="badge badge-review">{{ task.status }}</span>
+    {% else %}
+        <span class="badge badge-ready">{{ task.status }}</span>
+    {% endif %}
+</p>
 
-    <div class="score-card">
+  <div class="score-card">
+    <div>
         <h2>Release Readiness Score</h2>
-        <h1>{{ task.readiness_score }}/100</h1>
-        <p><strong>Status:</strong> {{ task.status }}</p>
-       
+        <p class="small-muted">Calculated from pipeline status and data quality checks.</p>
     </div>
+    <div>
+        <h1>{{ task.readiness_score }}/100</h1>
+    </div>
+</div>
 
     <section class="card">
         <h2>Agent Plan</h2>

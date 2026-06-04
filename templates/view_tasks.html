@@ -37,7 +37,15 @@
             <td>{{ task.task_type }}</td>
             <td>{{ task.source }}</td>
             <td>{{ task.dataset }}</td>
-            <td>{{ task.status }}</td>
+            <td>
+    {% if task.status == "Blocked" %}
+        <span class="badge badge-blocked">{{ task.status }}</span>
+    {% elif task.status == "Needs Review" %}
+        <span class="badge badge-review">{{ task.status }}</span>
+    {% else %}
+        <span class="badge badge-ready">{{ task.status }}</span>
+    {% endif %}
+</td>
             <td>{{ task.readiness_score }}/100</td>
             <td>{{ task.created_at }}</td>
         </tr>
@@ -94,13 +102,12 @@
         <p><strong>GitLab Status:</strong> {{ selected_task.gitlab_action.status }}</p>
 
         {% if selected_task.gitlab_action.gitlab_url %}
-            <p>
-                <strong>GitLab Link:</strong>
-                <a href="{{ selected_task.gitlab_action.gitlab_url }}" target="_blank">
-                    Open GitLab Work Item
-                </a>
-            </p>
-        {% endif %}
+    <p>
+        <a class="button-link" href="{{ selected_task.gitlab_action.gitlab_url }}" target="_blank">
+            Open GitLab Work Item
+        </a>
+    </p>
+{% endif %}
 
         <details>
     <summary>Preview GitLab work item content</summary>

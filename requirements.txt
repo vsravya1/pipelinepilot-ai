@@ -4,3 +4,5 @@ pymongo
 requests
 google-generativeai
 certifi
+google-cloud-bigquery
+google-auth

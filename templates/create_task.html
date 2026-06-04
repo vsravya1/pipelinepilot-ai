@@ -7,51 +7,69 @@
 <body>
 
 <div class="container">
+
     <nav>
-        <a href="/">Create Task</a> |
+        <a href="/">Create Task</a>
         <a href="/tasks">View Tasks</a>
     </nav>
 
-    <hr>
+    <section class="hero">
+        <h1>PipelinePilot AI</h1>
+        <p>End-to-end DataOps production support agent for new jobs, production issues, and data quality checks.</p>
+    </section>
 
-    <h1>PipelinePilot AI</h1>
-    <h2>Create Task</h2>
+    <section class="card">
+        <h2>Create DataOps Task</h2>
+        <p class="small-muted">
+            Select a task type, source dataset, and goal. The supervisor agent will coordinate specialist agents and prepare a GitLab work item after approval.
+        </p>
 
-    <form method="POST" action="/run-task">
+        <form method="POST" action="/run-task">
 
-        <label>Task Type</label><br>
-        <select name="task_type">
-            <option>New Job Creation</option>
-            <option>Production Support Issue</option>
-            <option>Data Quality Check</option>
-        </select>
+            <div class="grid">
+                <div>
+                    <label>Task Type</label>
+                    <select name="task_type">
+                        <option>New Job Creation</option>
+                        <option>Production Support Issue</option>
+                        <option>Data Quality Check</option>
+                    </select>
+                </div>
 
-        <br><br>
+                <div>
+                    <label>Source</label>
+                    <input type="text" name="source" value="MongoDB">
+                </div>
 
-        <label>Source</label><br>
-        <input type="text" name="source" value="MongoDB">
+                <div>
+                    <label>Dataset / Collection</label>
+                    <input type="text" name="dataset" value="orders">
+                </div>
 
-        <br><br>
+                <div>
+                    <label>Target</label>
+                    <input type="text" name="target" value="analytics.fact_orders">
+                </div>
+            </div>
 
-        <label>Dataset / Collection</label><br>
-        <input type="text" name="dataset" value="orders">
+            <br>
 
-        <br><br>
+            <label>Goal</label>
+            <textarea name="goal">Prepare MongoDB orders data for analytics release, generate transformation logic, run data quality checks, and prepare a GitLab release checklist.</textarea>
 
-        <label>Target</label><br>
-        <input type="text" name="target" value="analytics.fact_orders">
+            <br><br>
 
-        <br><br>
+            <button type="submit">Generate Plan & Run Agent Workflow</button>
+        </form>
+    </section>
 
-        <label>Goal</label><br>
-<textarea name="goal">Prepare MongoDB orders data for analytics release, generate transformation logic, run data quality checks, and prepare a GitLab release checklist.</textarea>
-        <br><br>
+    <section class="card">
+        <h3>Demo Scenarios</h3>
+        <p><strong>New Job Creation:</strong> Generate transformation logic, validation rules, and release checklist.</p>
+        <p><strong>Production Support Issue:</strong> Investigate stale data, schema drift, and root cause.</p>
+        <p><strong>Data Quality Check:</strong> Validate source records and recommend safe remediation steps.</p>
+    </section>
 
-        <button type="submit">Generate Plan & Run Agent Workflow</button>
-    </form>
-
-    <br>
-    <a href="/tasks">View Tasks</a>
 </div>
 
 </body>
