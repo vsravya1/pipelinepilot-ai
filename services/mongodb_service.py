@@ -100,3 +100,28 @@ def approve_gitlab_action(task_id, gitlab_result):
     )
 
     return result.modified_count > 0
+
+def save_report(task):
+    report = {
+        "task_id": task.get("task_id"),
+        "task_type": task.get("task_type"),
+        "dataset": task.get("dataset"),
+        "source": task.get("source"),
+        "target": task.get("target"),
+        "status": task.get("status"),
+        "readiness_score": task.get("readiness_score"),
+        "fivetran_status": task.get("fivetran_status"),
+        "quality_result": task.get("quality_result"),
+        "support_result": task.get("support_result"),
+        "transformation": task.get("transformation"),
+        "agent_summary": task.get("agent_summary"),
+        "gitlab_action": task.get("gitlab_action"),
+        "created_at": datetime.utcnow().isoformat()
+    }
+
+    db.reports.insert_one(report)
+    return True
+
+
+def get_report(task_id):
+    return db.reports.find_one({"task_id": task_id}, {"_id": 0})

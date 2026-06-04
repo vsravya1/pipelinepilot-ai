@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from agents.supervisor_agent import run_workflow
-from services.mongodb_service import get_tasks, get_task, get_messages, approve_gitlab_action
+from services.mongodb_service import get_tasks, get_task, get_messages, get_report, approve_gitlab_action
 from services.gitlab_service import create_gitlab_issue
 
 app = Flask(__name__)
@@ -44,6 +44,7 @@ def task_detail(task_id):
 
     if selected_task:
         selected_task["saved_messages"] = messages
+        selected_task["saved_report"] = get_report(task_id)
 
     return render_template(
         "view_tasks.html",

@@ -55,7 +55,20 @@
         <p><strong>Task Type:</strong> {{ selected_task.task_type }}</p>
         <p><strong>Goal:</strong> {{ selected_task.goal }}</p>
         <p><strong>Status:</strong> {{ selected_task.status }}</p>
-        <p><strong>Readiness Score:</strong> {{ selected_task.readiness_score }}/100</p>
+        {% if selected_task.saved_report %}
+<section class="card">
+    <h3>Saved Final Report</h3>
+    <p><strong>Report Status:</strong> {{ selected_task.saved_report.status }}</p>
+    <p><strong>Report Score:</strong> {{ selected_task.saved_report.readiness_score }}/100</p>
+
+    {% if selected_task.saved_report.agent_summary %}
+        <h4>Agent Summary</h4>
+        <div class="summary-box">
+            {{ selected_task.saved_report.agent_summary.summary | replace('\n', '<br>') | safe }}
+        </div>
+    {% endif %}
+</section>
+{% endif %}
 
         <h3>Agent Conversation History</h3>
 

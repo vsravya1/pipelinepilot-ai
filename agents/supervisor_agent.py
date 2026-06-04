@@ -3,8 +3,9 @@ from datetime import datetime
 
 from services.fivetran_service import get_pipeline_status
 from services.gitlab_service import prepare_gitlab_action
-from services.mongodb_service import save_task, save_messages
+from services.mongodb_service import save_task, save_messages, save_report
 from services.gemini_service import generate_agent_summary
+
 
 from agents.data_engineer_agent import generate_transformation
 from agents.data_quality_agent import run_quality_checks
@@ -140,5 +141,6 @@ def run_workflow(task_type, source, dataset, target, goal):
 
     save_task(task)
     save_messages(task_id, messages)
+    save_report(task)
 
     return task
