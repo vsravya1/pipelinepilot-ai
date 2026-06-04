@@ -83,3 +83,39 @@ input, select, textarea {
     margin-bottom: 12px;
     border-radius: 6px;
 }
+
+.gitlab-preview {
+    background: #f8fafc;
+    border: 1px solid #dbe4ee;
+    border-radius: 8px;
+    padding: 14px;
+    margin: 12px 0;
+}
+
+details {
+    margin: 14px 0;
+}
+
+summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: #2563eb;
+    margin-bottom: 10px;
+}
+
+.summary-box {
+    background: #f8fafc;
+    border-left: 4px solid #2563eb;
+    padding: 16px;
+    border-radius: 8px;
+    line-height: 1.6;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}

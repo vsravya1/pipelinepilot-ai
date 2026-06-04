@@ -75,7 +75,7 @@ def approve_gitlab_action(task_id, gitlab_result):
         {"task_id": task_id},
         {
             "$set": {
-                "gitlab_action.status": "Approved - GitLab issue created",
+                "gitlab_action.status": "Approved - GitLab work item created",
                 "gitlab_action.gitlab_url": gitlab_result.get("web_url"),
                 "gitlab_action.issue_id": gitlab_result.get("issue_id"),
                 "approval_status": "Approved"
@@ -86,7 +86,7 @@ def approve_gitlab_action(task_id, gitlab_result):
     db.approvals.insert_one({
         "task_id": task_id,
         "approval_status": "Approved",
-        "action": "GitLab issue created",
+        "action": "GitLab work item created",
         "gitlab_url": gitlab_result.get("web_url"),
         "issue_id": gitlab_result.get("issue_id"),
         "created_at": datetime.utcnow().isoformat()
@@ -96,7 +96,7 @@ def approve_gitlab_action(task_id, gitlab_result):
     add_message(
         task_id,
         "GitLab",
-        f"Created issue #{gitlab_result.get('issue_id')}: {gitlab_result.get('web_url')}"
+        f"Created GitLab work item #{gitlab_result.get('issue_id')}: {gitlab_result.get('web_url')}"
     )
 
     return result.modified_count > 0

@@ -75,9 +75,32 @@
             {% endfor %}
         {% endif %}
 
-        <h3>GitLab Prepared Action</h3>
+        <h3>GitLab Work Tracking</h3>
+
         <p><strong>Issue Title:</strong> {{ selected_task.gitlab_action.title }}</p>
-        <pre>{{ selected_task.gitlab_action.description }}</pre>
+        <p><strong>GitLab Status:</strong> {{ selected_task.gitlab_action.status }}</p>
+
+        {% if selected_task.gitlab_action.gitlab_url %}
+            <p>
+                <strong>GitLab Link:</strong>
+                <a href="{{ selected_task.gitlab_action.gitlab_url }}" target="_blank">
+                    Open GitLab Work Item
+                </a>
+            </p>
+        {% endif %}
+
+        <details>
+    <summary>Preview GitLab work item content</summary>
+    <div class="summary-box">
+        {{ selected_task.gitlab_action.description | replace('\n', '<br>') | safe }}
+    </div>
+</details>
+
+        {% if selected_task.gitlab_action.status != "Approved - GitLab work item created" %}
+        <form method="POST" action="/approve-gitlab/{{ selected_task.task_id }}">
+            <button type="submit">Approve & Create GitLab Work Item</button>
+        </form>
+        {% endif %}
     </section>
     {% endif %}
 
