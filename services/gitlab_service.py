@@ -36,6 +36,25 @@ def prepare_gitlab_action(
         f"**Status:** {quality_result['status']}",
     ]
 
+    if task_type == "New Job Creation":
+        lines.extend([
+            "",
+            "## Work Item Purpose",
+            "Track the release-readiness work needed to onboard a new analytics pipeline."
+        ])
+    elif task_type == "Production Support Issue":
+        lines.extend([
+            "",
+            "## Work Item Purpose",
+            "Track production support investigation and recovery steps for an existing data pipeline."
+        ])
+    elif task_type == "Data Quality Check":
+        lines.extend([
+            "",
+            "## Work Item Purpose",
+            "Track data quality remediation work before the dataset is used for analytics."
+        ])
+
     if agent_summary:
         lines.extend([
             "",

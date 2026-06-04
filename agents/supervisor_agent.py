@@ -69,6 +69,10 @@ def run_workflow(task_type, source, dataset, target, goal):
     if task_type == "New Job Creation":
         transformation = generate_transformation(dataset, target)
         add_message("Data Engineer Agent", transformation["summary"])
+        add_message(
+            "Data Engineer Agent",
+            "Prepared new pipeline release artifacts: transformation SQL, validation rules, and release checklist."
+        )
 
     quality_result = run_quality_checks()
     add_message("Data Quality Agent", quality_result["summary"])
@@ -76,8 +80,16 @@ def run_workflow(task_type, source, dataset, target, goal):
     if task_type == "Production Support Issue":
         support_result = investigate_issue(dataset, fivetran_status, quality_result)
         add_message("Production Support Agent", support_result["summary"])
+        add_message(
+            "Production Support Agent",
+            "Created production support investigation summary with root cause, business impact, and recommended recovery action."
+        )
 
     if task_type == "Data Quality Check":
+        add_message(
+            "Data Quality Agent",
+            "Focused data quality review completed. Failed checks were grouped into missing identifiers, invalid amounts, and timestamp format issues."
+        )
         add_message(
             "Data Quality Agent",
             "Recommended safe correction actions: " + "; ".join(quality_result["safe_fixes"])
