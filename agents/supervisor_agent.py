@@ -5,7 +5,7 @@ from services.fivetran_service import get_pipeline_status
 from services.gitlab_service import prepare_gitlab_action
 from services.mongodb_service import save_task, save_messages, save_report
 from services.gemini_service import generate_agent_summary
-
+from services.bigquery_service import load_orders_to_bigquery
 
 from agents.data_engineer_agent import generate_transformation
 from agents.data_quality_agent import run_quality_checks
@@ -66,15 +66,21 @@ def run_workflow(task_type, source, dataset, target, goal):
 
     transformation = None
     support_result = None
+    bigquery_result = None
 
     if task_type == "New Job Creation":
+        bigquery_result = load_orders_to_bigquery()
+        add_message(
+            "BigQuery Loader",
+            f"{bigquery_result['message']} Target table: {bigquery_result['table']}"
+        )
+
         transformation = generate_transformation(dataset, target)
         add_message("Data Engineer Agent", transformation["summary"])
         add_message(
             "Data Engineer Agent",
-            "Prepared new pipeline release artifacts: transformation SQL, validation rules, and release checklist."
+            "Prepared new pipeline release artifacts: transformation SQL, validation rules, BigQuery load result, and release checklist."
         )
-
     quality_result = run_quality_checks()
     add_message("Data Quality Agent", quality_result["summary"])
 
@@ -136,7 +142,8 @@ def run_workflow(task_type, source, dataset, target, goal):
         "status": quality_result["status"],
         "readiness_score": quality_result["score"],
         "messages": messages,
-        "agent_summary": agent_summary
+        "agent_summary": agent_summary,
+        "bigquery_result": bigquery_result,
     }
 
     save_task(task)

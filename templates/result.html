@@ -110,6 +110,16 @@
         </ul>
     </section>
 
+{% if task.bigquery_result %}
+<section class="card">
+    <h2>BigQuery Target Load</h2>
+    <p><strong>Status:</strong> {{ task.bigquery_result.status }}</p>
+    <p><strong>Rows Loaded:</strong> {{ task.bigquery_result.rows_loaded }}</p>
+    <p><strong>Target Table:</strong> {{ task.bigquery_result.table }}</p>
+    <p>{{ task.bigquery_result.message }}</p>
+</section>
+{% endif %}
+
     {% if task.transformation %}
     <section class="card">
         <h2>Generated Transformation SQL</h2>

@@ -116,7 +116,8 @@ def save_report(task):
         "transformation": task.get("transformation"),
         "agent_summary": task.get("agent_summary"),
         "gitlab_action": task.get("gitlab_action"),
-        "created_at": datetime.utcnow().isoformat()
+        "created_at": datetime.utcnow().isoformat(),
+        "bigquery_result": task.get("bigquery_result")
     }
 
     db.reports.insert_one(report)
