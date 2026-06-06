@@ -71,22 +71,38 @@
 </section>
 
     <section class="card">
-        <h2>Fivetran Pipeline Status</h2>
-        <p><strong>Connector:</strong> {{ task.fivetran_status.connector }}</p>
-        <p><strong>Status:</strong> {{ task.fivetran_status.status }}</p>
-         <p><strong>Status Source:</strong> {{ task.fivetran_status.source }}</p>
-        <p><strong>Last Sync:</strong> {{ task.fivetran_status.last_sync }}</p>
-        <p><strong>Schema Drift:</strong> {{ task.fivetran_status.schema_drift }}</p>
+    <h2>Fivetran MCP Tool Result</h2>
 
-        {% if task.fivetran_status.new_fields %}
-            <p><strong>New Fields:</strong></p>
-            <ul>
-                {% for field in task.fivetran_status.new_fields %}
-                    <li>{{ field }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </section>
+    <p><strong>Integration Mode:</strong> {{ task.fivetran_status.integration_mode }}</p>
+    <p><strong>MCP Call Status:</strong> {{ task.fivetran_status.mcp_call_status }}</p>
+    <p><strong>MCP Result:</strong> {{ task.fivetran_status.mcp_result }}</p>
+    <p><strong>Connections Found:</strong> {{ task.fivetran_status.connections_found }}</p>
+
+    {% if task.fivetran_status.fallback_used %}
+        <p><strong>Fallback Used:</strong> Yes</p>
+        <p><strong>Fallback Status:</strong> {{ task.fivetran_status.fallback_status }}</p>
+    {% else %}
+        <p><strong>Fallback Used:</strong> No</p>
+    {% endif %}
+
+    <hr>
+
+    <h3>Pipeline Status Used by Agents</h3>
+    <p><strong>Connector:</strong> {{ task.fivetran_status.connector }}</p>
+    <p><strong>Status:</strong> {{ task.fivetran_status.status }}</p>
+    <p><strong>Status Source:</strong> {{ task.fivetran_status.source }}</p>
+    <p><strong>Last Sync:</strong> {{ task.fivetran_status.last_sync }}</p>
+    <p><strong>Schema Drift:</strong> {{ task.fivetran_status.schema_drift }}</p>
+
+    {% if task.fivetran_status.new_fields %}
+        <p><strong>New Fields / Warnings:</strong></p>
+        <ul>
+            {% for field in task.fivetran_status.new_fields %}
+                <li>{{ field }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</section>
 
     <section class="card">
         <h2>Data Quality Issues</h2>

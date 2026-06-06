@@ -62,7 +62,7 @@ def run_workflow(task_type, source, dataset, target, goal):
     add_message("Supervisor Agent", "Created execution plan: " + " → ".join(plan))
 
     fivetran_status = get_pipeline_status(source, dataset)
-    add_message("Fivetran MCP", fivetran_status["summary"])
+    add_message("Fivetran MCP Tool", fivetran_status["summary"])
 
     transformation = None
     support_result = None
