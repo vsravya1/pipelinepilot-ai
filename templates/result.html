@@ -43,6 +43,15 @@
     </div>
 </div>
 
+{% if task.onboarding_mode %}
+<section class="card">
+    <h2>Pipeline Onboarding Mode</h2>
+    <p><strong>Mode:</strong> {{ task.onboarding_mode.mode }}</p>
+    <p><strong>Decision Source:</strong> {{ task.onboarding_mode.source }}</p>
+    <p>{{ task.onboarding_mode.reason }}</p>
+</section>
+{% endif %}
+
     <section class="card">
         <h2>Agent Plan</h2>
         <ol>
@@ -77,6 +86,18 @@
     <p><strong>MCP Call Status:</strong> {{ task.fivetran_status.mcp_call_status }}</p>
     <p><strong>MCP Result:</strong> {{ task.fivetran_status.mcp_result }}</p>
     <p><strong>Connections Found:</strong> {{ task.fivetran_status.connections_found }}</p>
+    {% if task.fivetran_status.tool_calls %}
+    <h3>Fivetran Tool Calls</h3>
+    <ul>
+        {% for call in task.fivetran_status.tool_calls %}
+            <li>
+                <strong>{{ call.tool_name }}</strong>
+                — {{ call.status }}<br>
+                <span class="small-muted">{{ call.result }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
     {% if task.fivetran_status.fallback_used %}
         <p><strong>Fallback Used:</strong> Yes</p>
@@ -138,7 +159,7 @@
 
     {% if task.transformation %}
     <section class="card">
-        <h2>Generated Transformation SQL</h2>
+        <h2>Generated Transformation / Architecture Recommendation</h2>
         <pre>{{ task.transformation.sql }}</pre>
 
         <h3>Validation Rules</h3>

@@ -29,12 +29,21 @@
             <div class="grid">
                 <div>
                     <label>Task Type</label>
-                    <select name="task_type">
-                        <option>New Job Creation</option>
-                        <option>Production Support Issue</option>
-                        <option>Data Quality Check</option>
-                    </select>
+                   <select name="task_type">
+    <option>Pipeline Onboarding</option>
+    <option>Production Support Issue</option>
+    <option>Data Quality Check</option>
+</select>
                 </div>
+                <div>
+    <label>Pipeline Mode</label>
+    <select name="pipeline_mode">
+        <option>Auto - Let Gemini decide</option>
+        <option>One-time raw load</option>
+        <option>Raw load + dbt-style model</option>
+        <option>Medallion architecture plan</option>
+    </select>
+</div>
 
                 <div>
                     <label>Source</label>
@@ -55,8 +64,7 @@
             <br>
 
             <label>Goal</label>
-            <textarea name="goal">Prepare MongoDB orders data for analytics release, generate transformation logic, run data quality checks, and prepare a GitLab release checklist.</textarea>
-
+<textarea name="goal">Prepare MongoDB orders data for analytics onboarding. Decide whether this should be a one-time raw load, raw load with dbt-style model, or medallion architecture plan. Load sample raw records to BigQuery and create a GitLab work item for tracking.</textarea>
             <br><br>
 
             <button type="submit">Generate Plan & Run Agent Workflow</button>

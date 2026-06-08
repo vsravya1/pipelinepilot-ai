@@ -11,18 +11,20 @@ from agents.data_engineer_agent import generate_transformation
 from agents.data_quality_agent import run_quality_checks
 from agents.prod_support_agent import investigate_issue
 
+from services.gemini_service import infer_pipeline_onboarding_mode
 
 
-def create_plan(task_type, source, dataset, target, goal):
-    if task_type == "New Job Creation":
+def create_plan(task_type, source, dataset, target, goal, pipeline_mode=None):
+    if task_type == "Pipeline Onboarding":
         return [
-            "Check Fivetran pipeline/source readiness",
-            "Inspect source schema",
-            "Generate transformation logic",
-            "Create data quality rules",
-            "Run data quality checks",
-            "Prepare release readiness report",
-            "Prepare GitLab checklist for approval"
+        "Check Fivetran pipeline/connection readiness",
+        "Inspect source dataset context",
+        "Infer onboarding mode from user goal and selected pipeline mode",
+        "Load raw sample records into BigQuery target table",
+        "Generate transformation or architecture recommendation",
+        "Run data quality checks",
+        "Prepare onboarding readiness report",
+        "Prepare GitLab work item for approval"
         ]
 
     if task_type == "Production Support Issue":
@@ -44,7 +46,7 @@ def create_plan(task_type, source, dataset, target, goal):
     ]
 
 
-def run_workflow(task_type, source, dataset, target, goal):
+def run_workflow(task_type, source, dataset, target, goal, pipeline_mode=None):
     task_id = "TASK-" + str(uuid.uuid4())[:8].upper()
     created_at = datetime.utcnow().isoformat()
 
@@ -58,7 +60,7 @@ def run_workflow(task_type, source, dataset, target, goal):
 
     add_message("User", goal)
 
-    plan = create_plan(task_type, source, dataset, target, goal)
+    plan = create_plan(task_type, source, dataset, target, goal, pipeline_mode)
     add_message("Supervisor Agent", "Created execution plan: " + " → ".join(plan))
 
     fivetran_status = get_pipeline_status(source, dataset)
@@ -67,15 +69,21 @@ def run_workflow(task_type, source, dataset, target, goal):
     transformation = None
     support_result = None
     bigquery_result = None
+    onboarding_mode = None
 
-    if task_type == "New Job Creation":
+    if task_type == "Pipeline Onboarding":
+        onboarding_mode = infer_pipeline_onboarding_mode(goal, pipeline_mode)
+        add_message(
+            "Supervisor Agent",
+            f"Pipeline onboarding mode selected: {onboarding_mode['mode']} ({onboarding_mode['source']}). {onboarding_mode['reason']}"
+        )
         bigquery_result = load_orders_to_bigquery()
         add_message(
             "BigQuery Loader",
             f"{bigquery_result['message']} Target table: {bigquery_result['table']}"
         )
 
-        transformation = generate_transformation(dataset, target)
+        transformation = generate_transformation(dataset, target, onboarding_mode, goal)
         add_message("Data Engineer Agent", transformation["summary"])
         add_message(
             "Data Engineer Agent",
@@ -144,6 +152,8 @@ def run_workflow(task_type, source, dataset, target, goal):
         "messages": messages,
         "agent_summary": agent_summary,
         "bigquery_result": bigquery_result,
+        "pipeline_mode": pipeline_mode,
+        "onboarding_mode": onboarding_mode,
     }
 
     save_task(task)

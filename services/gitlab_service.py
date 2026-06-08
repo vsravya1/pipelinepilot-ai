@@ -18,8 +18,8 @@ def prepare_gitlab_action(
     messages=None,
     agent_summary=None
 ):
-    if task_type == "New Job Creation":
-        title = f"New Pipeline Work Item: Prepare {dataset} for analytics release"
+    if task_type == "Pipeline Onboarding":
+        title = f"Pipeline Onboarding Work Item: Prepare {dataset} for analytics release"
     elif task_type == "Production Support Issue":
         title = f"Production Support Work Item: Investigate {dataset} pipeline issue"
     elif task_type == "Data Quality Check":
@@ -36,11 +36,11 @@ def prepare_gitlab_action(
         f"**Status:** {quality_result['status']}",
     ]
 
-    if task_type == "New Job Creation":
+    if task_type == "Pipeline Onboarding":
         lines.extend([
             "",
             "## Work Item Purpose",
-            "Track the release-readiness work needed to onboard a new analytics pipeline."
+            "Track the onboarding-readiness work needed to prepare this dataset for analytics use."
         ])
     elif task_type == "Production Support Issue":
         lines.extend([
@@ -69,17 +69,35 @@ def prepare_gitlab_action(
 
     if fivetran_status:
         lines.extend([
+            f"- Integration Mode: {fivetran_status.get('integration_mode')}",
+            f"- MCP Call Status: {fivetran_status.get('mcp_call_status')}",
+            f"- MCP Result: {fivetran_status.get('mcp_result')}",
+            f"- Connections Found: {fivetran_status.get('connections_found')}",
+            f"- Fallback Used: {fivetran_status.get('fallback_used')}",
+            f"- Fallback Status: {fivetran_status.get('fallback_status')}",
+            "",
+            "### Pipeline Status Used by Agents",
             f"- Connector: {fivetran_status.get('connector')}",
             f"- Status: {fivetran_status.get('status')}",
             f"- Last Sync: {fivetran_status.get('last_sync')}",
             f"- Schema Drift: {fivetran_status.get('schema_drift')}",
         ])
 
+        tool_calls = fivetran_status.get("tool_calls", [])
+        if tool_calls:
+            lines.append("")
+            lines.append("### Fivetran Tool Calls")
+            for call in tool_calls:
+                lines.append(
+                    f"- {call.get('tool_name')}: {call.get('status')} — {call.get('result')}"
+                )
+
         new_fields = fivetran_status.get("new_fields", [])
         if new_fields:
-            lines.append("- New Fields Detected:")
+            lines.append("")
+            lines.append("### New Fields / Warnings Detected")
             for field in new_fields:
-                lines.append(f"  - {field}")
+                lines.append(f"- {field}")
     else:
         lines.append("- Fivetran status not available")
 

@@ -18,15 +18,16 @@ def run_task():
     dataset = request.form.get("dataset")
     target = request.form.get("target")
     goal = request.form.get("goal")
+    pipeline_mode = request.form.get("pipeline_mode")
 
     task = run_workflow(
-        task_type=task_type,
-        source=source,
-        dataset=dataset,
-        target=target,
-        goal=goal
+    task_type=task_type,
+    source=source,
+    dataset=dataset,
+    target=target,
+    goal=goal,
+    pipeline_mode=pipeline_mode
     )
-
     return render_template("result.html", task=task)
 
 

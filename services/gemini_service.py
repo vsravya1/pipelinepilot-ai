@@ -101,3 +101,116 @@ def _fallback_summary(task_type, dataset, fivetran_status, quality_result, suppo
     ])
 
     return "\n".join(lines)
+
+def infer_pipeline_onboarding_mode(goal, selected_mode):
+    if selected_mode and selected_mode != "Auto - Let Gemini decide":
+        return {
+            "source": "user_selected",
+            "mode": selected_mode,
+            "reason": "User selected the pipeline mode explicitly."
+        }
+
+    fallback_mode = "Raw load + dbt-style model"
+
+    if not GOOGLE_API_KEY:
+        return {
+            "source": "rule-based fallback",
+            "mode": fallback_mode,
+            "reason": "No Gemini key available. Defaulting to raw load plus dbt-style model."
+        }
+
+    try:
+        import google.generativeai as genai
+
+        genai.configure(api_key=GOOGLE_API_KEY)
+        model = genai.GenerativeModel("gemini-2.0-flash")
+
+        prompt = f"""
+You are a data engineering supervisor.
+
+Classify this pipeline onboarding request into exactly one mode:
+
+1. One-time raw load
+2. Raw load + dbt-style model
+3. Medallion architecture plan
+
+User goal:
+{goal}
+
+Return only this format:
+Mode: <one of the three modes>
+Reason: <one short sentence>
+"""
+
+        response = model.generate_content(prompt)
+        text = response.text.strip()
+
+        mode = fallback_mode
+        if "One-time raw load" in text:
+            mode = "One-time raw load"
+        elif "Medallion architecture plan" in text:
+            mode = "Medallion architecture plan"
+        elif "Raw load + dbt-style model" in text:
+            mode = "Raw load + dbt-style model"
+
+        return {
+            "source": "gemini",
+            "mode": mode,
+            "reason": text
+        }
+
+    except Exception as e:
+        return {
+            "source": "rule-based fallback",
+            "mode": fallback_mode,
+            "reason": f"Gemini mode inference failed: {str(e)}"
+        }
+    
+
+def generate_data_engineer_plan(dataset, target, onboarding_mode=None, goal=None):
+    mode = onboarding_mode.get("mode") if onboarding_mode else "Raw load + dbt-style model"
+
+    fallback = {
+        "source": "rule-based fallback",
+        "plan": (
+            f"Pipeline onboarding mode: {mode}. "
+            f"Load source dataset {dataset} into BigQuery raw_orders. "
+            "Generate the appropriate transformation or architecture recommendation for engineering review."
+        )
+    }
+
+    if not GOOGLE_API_KEY:
+        return fallback
+
+    try:
+        import google.generativeai as genai
+
+        genai.configure(api_key=GOOGLE_API_KEY)
+        model = genai.GenerativeModel("gemini-2.0-flash")
+
+        prompt = f"""
+You are a senior data engineer.
+
+Dataset: {dataset}
+Target: {target}
+Onboarding mode: {mode}
+User goal: {goal}
+
+Create a short practical onboarding plan.
+Explain what should be executed now and what should be tracked for engineering review.
+Do not use markdown tables.
+Keep it under 120 words.
+"""
+
+        response = model.generate_content(prompt)
+
+        return {
+            "source": "gemini",
+            "plan": response.text
+        }
+
+    except Exception as e:
+        return {
+            "source": "rule-based fallback",
+            "plan": fallback["plan"] + f" Gemini fallback used because: {str(e)}"
+        }    
